@@ -1,0 +1,17 @@
+{
+  "name": "selenium",
+  "version": "1.0.0",
+  "description": "",
+  "main": "screenshot-phantom.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "chromedriver": "^2.31.0",
+    "mailgun-js": "^0.13.1",
+    "phantomjs-prebuilt": "^2.1.15",
+    "selenium-webdriver": "^3.5.0"
+  }
+}
