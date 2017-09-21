@@ -1,3 +1,9 @@
 /config
 node_modules/
 .DS_Store
+
+# wip files
+book-dynamic.js
+
+# old files
+z-phantom.js

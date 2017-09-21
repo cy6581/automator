@@ -9,7 +9,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "chromedriver": "^2.31.0",
+    "chromedriver": "^2.32.3",
     "mailgun-js": "^0.13.1",
     "phantomjs-prebuilt": "^2.1.15",
     "selenium-webdriver": "^3.5.0"
