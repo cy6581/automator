@@ -10,6 +10,7 @@
   "license": "ISC",
   "dependencies": {
     "chromedriver": "^2.32.3",
+    "co": "^4.6.0",
     "mailgun-js": "^0.13.1",
     "selenium-webdriver": "^3.5.0"
   }

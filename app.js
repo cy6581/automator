@@ -2,6 +2,9 @@
 // change user 
 var chosenUser = process.argv[2] || "nil";
 
+
+const co = require('co');
+
 // site specific
 const ff = require('./config/config.js').fitnessFirst;
 const selectors = require('./config/config.js').fitnessFirst.selectors;
@@ -11,7 +14,10 @@ const mailgun = require('mailgun-js')(mailOptions);
 
 const webd = require('selenium-webdriver');
 const chromeCapabilities = webd.Capabilities.chrome();
-// chromeCapabilities.set('chromeOptions', { args: ['--headless'] });
+chromeCapabilities.set('chromeOptions', { args: ['--headless'] });
+
+require('chromedriver');
+// you need this line unless you are referring to global chrome version 
 
 const d = new webd.Builder()
     .forBrowser('chrome')
@@ -19,10 +25,10 @@ const d = new webd.Builder()
     .build(); 
 
 // resize browser to prevent click errors
-// FF page not properly responsive for PhantomJS
 d.manage().window().setSize(1050, 900);
 
-const sendScreenshot = (user) => {
+const sendScreenshot = (userArg) => {
+    let user = userArg || 'Default User';
     let emailObject = mailOptions.emailObject;
     emailObject.subject = `Screenshot for booking by ${user}`;
     d.takeScreenshot()
@@ -59,11 +65,36 @@ const clickBookButton = (chosenClass, chosenUser) => {
 
 
 // you need a webd.until
-d.get(ff.url);
-
 let user = ff.users[chosenUser];
-d.wait(webd.until.elementLocated(selectors.selectArrow), 20000).click();
-d.wait(webd.until.elementLocated(selectors.bugisOption), 20000).click();
+
+// load page, send screenshot as timestamp
+d.get(ff.url);
+sendScreenshot(chosenUser);
+
+// choose Bugis page, using CO function
+co(function *(){
+    var bugisScript;
+    let options = d.findElement({ id: 'optLocation' });
+    let array = yield options.findElements({ css: 'option' });
+    for (let i = 0; i < array.length; i ++ ) {
+      var place = array[i];
+      let t = yield place.getAttribute('innerText');
+      t = t.replace(/^\s+|\s+$/g, "");
+      console.log(t);
+      if (t === "Bugis Junction" ) {
+          let bugisValue = yield place.getAttribute('value');
+          console.log(`Value of ${t} is ${bugisValue}`);
+          bugisScript = `document.getElementById('optLocation').value = '${bugisValue}' `;
+          console.log(bugisScript);
+          break;
+      }
+    }
+    d.executeScript(bugisScript);
+    d.executeScript("window.subForm()");
+  });
+
+
+// login and select class
 d.findElement(selectors.userIdField).sendKeys(user.email);
 d.findElement(selectors.userPassword).sendKeys(user.password);
 d.findElement(selectors.loginButton).click();

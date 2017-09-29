@@ -4,6 +4,7 @@ node_modules/
 
 # wip files
 book-dynamic.js
+test.js
 
 # old files
 z-phantom.js
