@@ -76,6 +76,7 @@ co(function *(){
     var bugisScript;
     let options = d.findElement({ id: 'optLocation' });
     let array = yield options.findElements({ css: 'option' });
+    
     for (let i = 0; i < array.length; i ++ ) {
       var place = array[i];
       let t = yield place.getAttribute('innerText');
